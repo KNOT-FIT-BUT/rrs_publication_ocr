@@ -62,8 +62,8 @@ dokumentech, poèet oznaèení klasifikátorem a poèet správných oznaèení klasifikát
 
 ./SaveOutClassToDatabase.py
 
-Skript prochází složku OutClass a všechny doposud neuložené dokumenty ukládá do databáze. Seznam již uložených dokumentù je <br />
-obsažen v souboru OutSavedToDB.dat. Skript tento seznam s každým svým bìhem aktualizuje. <br />
+Skript prochází složku OutClass a všechny doposud neuložené dokumenty ukládá do databáze. Seznam již uložených dokumentù <br />
+je obsažen v souboru OutSavedToDB.dat. Skript tento seznam s každým svým bìhem aktualizuje. <br />
 
 Skript vyuziva pro pristup k databazi soubor databaseAccess.dat, ktery je naplnen pristupovymi udaji ve tvaru: <br />
 host:dbname:user:password <br />
