@@ -12,13 +12,13 @@ Slozka s instalacnimi soubory CRF++ klasifikatoru + trenovaci data.
 
 ./lsr.py --input vstup --output výstup -m [extract_all | extract_hed | extract_section| extract_nocit] -i [rtf | ...]
 
---input - vstupní soubor <br />
---output - výstupní soubor v XML. Pokud není zadán, tiskne se výsledek na standardní výstup. <br />
--m - mód zpracování souboru: - "extract_all" - provede základní klasifikaci dokumentu + dodateènou klasifikaci nadpisù <br />
-                                + klasifikaci hlavièky dokumentu <br />
-                             - "extract_hed" - provede klasifikaci hlavièky dokumentu <br />
-                             - "extract_section" - provede základní klasifikaci dokumentu <br />
--i - urèuje formát vstupu. Zatím "rtf" bere jako vstupní soubor formátu RTF, ostatní èi nezadané považuje za txt soubor. <br />
+>--input - vstupní soubor <br />
+>--output - výstupní soubor v XML. Pokud není zadán, tiskne se výsledek na standardní výstup. <br />
+>-m - mód zpracování souboru: - "extract_all" - provede základní klasifikaci dokumentu + dodateènou klasifikaci nadpisù <br />
+>                                + klasifikaci hlavièky dokumentu <br />
+>                             - "extract_hed" - provede klasifikaci hlavièky dokumentu <br />
+>                             - "extract_section" - provede základní klasifikaci dokumentu <br />
+>-i - urèuje formát vstupu. Zatím "rtf" bere jako vstupní soubor formátu RTF, ostatní èi nezadané považuje za txt soubor. <br />
 
 ./processOCRRTF.py <br />
 
