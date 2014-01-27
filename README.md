@@ -1,140 +1,120 @@
-rrs_publication_ocr
-===================
+# rrs_publication_ocr #
 
-+-----------------+
-|crfpp/           |
-+-----------------+
+## crfpp/ ##
 
 Slozka s instalacnimi soubory CRF++ klasifikatoru + trenovaci data.
 
+## LSR/ ##
 
-+-----------------+
-|LSR/             |
-+-----------------+
+### Skripty ###
 
-===================
-Skripty
-===================
-
-Klasifikator:
--------------
+#### Klasifikator: ####
 
 ./lsr.py --input vstup --output výstup -m [extract_all | extract_hed | extract_section| extract_nocit] -i [rtf | ...]
 
---input - vstupní soubor
---output - výstupní soubor v XML. Pokud není zadán, tiskne se výsledek na standardní výstup.
--m - mód zpracování souboru: - "extract_all" - provede základní klasifikaci dokumentu + dodateènou klasifikaci nadpisù
-                                + klasifikaci hlavièky dokumentu
-                             - "extract_hed" - provede klasifikaci hlavièky dokumentu
-                             - "extract_section" - provede základní klasifikaci dokumentu
--i - urèuje formát vstupu. Zatím "rtf" bere jako vstupní soubor formátu RTF, ostatní èi nezadané považuje za txt soubor.
+--input - vstupní soubor <br />
+--output - výstupní soubor v XML. Pokud není zadán, tiskne se výsledek na standardní výstup. <br />
+-m - mód zpracování souboru: - "extract_all" - provede základní klasifikaci dokumentu + dodateènou klasifikaci nadpisù <br />
+                                + klasifikaci hlavièky dokumentu <br />
+                             - "extract_hed" - provede klasifikaci hlavièky dokumentu <br />
+                             - "extract_section" - provede základní klasifikaci dokumentu <br />
+-i - urèuje formát vstupu. Zatím "rtf" bere jako vstupní soubor formátu RTF, ostatní èi nezadané považuje za txt soubor. <br />
 
-./processOCRRTF.py
+./processOCRRTF.py <br />
 
-Jedna se o modul, ktery pouziva klasifikator k extrahovani suroveho textu z vysledku klasifikace, ktera je ve forme XML
-souboru.
+Jedna se o modul, ktery pouziva klasifikator k extrahovani suroveho textu z vysledku klasifikace, ktera je ve forme XML <br />
+souboru. <br />
 
-XML parser:
------------
+#### XML parser: ####
 
 ./xmlParser.py
 
 XML parser je možné použít i samostatnì bez následné klasifikace.
 
+#### RTF parser: ####
 
-RTF parser:
------------
-
-Starý parser
+Starý parser <br />
 ./rtfParser.py
 
-Nový parser
+Nový parser <br />
 ./rtfParserNew.py
 
 RTF parser je možné použít i samostatnì bez následné klasifikace. Staèí odkomentovat funkci main().
 
-
-Klasifikace dokumentu z vystupu OCR systemu:
---------------------------------------------
+#### Klasifikace dokumentu z vystupu OCR systemu: ####
 
 ./runClassification.py
 
-Skript urceny pouze pro zklasifikovani vsech dokumentu nachazejicich se ve vystupni slozce OCR systemu.
-K tomuto skriptu se vaze soubor classPassed.dat, ktery rika, ktere slozky jiz byly klasifikovany a take
-soubor outClass.log, ktery uchovava informace o vysledku klasifikace kazdeho klasifikovaneho souboru.
+Skript urceny pouze pro zklasifikovani vsech dokumentu nachazejicich se ve vystupni slozce OCR systemu. <br />
+K tomuto skriptu se vaze soubor classPassed.dat, ktery rika, ktere slozky jiz byly klasifikovany a take <br />
+soubor outClass.log, ktery uchovava informace o vysledku klasifikace kazdeho klasifikovaneho souboru. <br />
 
-Automatizované vyhodnocení klasifikace:
----------------------------------------
+#### Automatizované vyhodnocení klasifikace: ####
 
 ./ClassificationCheck.py
 
-Automatizované vyhodnocení provádí kontrolu klasifikace Titulu, Autorù, E-Mailù, Pøièlenìní, Abstraktu, Nadpisu 1 a Nadpisu 2.
-Výstupem je tabulka pro každý soubor, která ukazuje výsledek klasifikace pro danou èást dokumentu. Po dokonèení kontroly všech
-dokumentù je vytvoøena tabulka ukazující F-Measure Score, Recall, Precision, skuteèný poèet dané èasti dokumentu ve všech
-dokumentech, poèet oznaèení klasifikátorem a poèet správných oznaèení klasifikátorem.
+Automatizované vyhodnocení provádí kontrolu klasifikace Titulu, Autorù, E-Mailù, Pøièlenìní, Abstraktu, Nadpisu 1 a Nadpisu 2. <br />
+Výstupem je tabulka pro každý soubor, která ukazuje výsledek klasifikace pro danou èást dokumentu. Po dokonèení kontroly všech <br />
+dokumentù je vytvoøena tabulka ukazující F-Measure Score, Recall, Precision, skuteèný poèet dané èasti dokumentu ve všech <br />
+dokumentech, poèet oznaèení klasifikátorem a poèet správných oznaèení klasifikátorem. <br />
 
-
-Uložení klasifikovaných dokumentù do databáze:
-----------------------------------------------
+#### Uložení klasifikovaných dokumentù do databáze: ####
 
 ./SaveOutClassToDatabase.py
 
-Skript prochází složku OutClass a všechny doposud neuložené dokumenty ukládá do databáze. Seznam již uložených dokumentù je
-obsažen v souboru OutSavedToDB.dat. Skript tento seznam s každým svým bìhem aktualizuje.
+Skript prochází složku OutClass a všechny doposud neuložené dokumenty ukládá do databáze. Seznam již uložených dokumentù je <br />
+obsažen v souboru OutSavedToDB.dat. Skript tento seznam s každým svým bìhem aktualizuje. <br />
 
-Skript vyuziva pro pristup k databazi soubor databaseAccess.dat, ktery je naplnen pristupovymi udaji ve tvaru:
-host:dbname:user:password
+Skript vyuziva pro pristup k databazi soubor databaseAccess.dat, ktery je naplnen pristupovymi udaji ve tvaru: <br />
+host:dbname:user:password <br />
 
 Jelikoz tento soubor obsahuje citliva data, neni verzovan a je nutne si jej lokalne vytvorit!
 
+### Slozky ###
 
-===================
-Slozky
-===================
+#### crfpp/ ####
 
-crfpp/
-------
 obsahuje nainstalovany CRF++ klasifikator
 
-in/
----
-Sada dokumentu z OCR systemu, ktera slouzi pro kontrolu chovani klasifikatoru a jeho schopnost klasifikace po upravach.
-Spravna klasifikace je ulozena v manualClassification.txt ve formatu JSON.
+#### in/ ####
 
-in2/
----
-Druha sada dokumentu z OCR systemu, ktera slouzi pro kontrolu chovani klasifikatoru a jeho schopnost klasifikace po upravach.
-Spravna klasifikace je ulozena v manualClassificationWithReferences.txt ve formatu JSON. Tato sada narozdil od prvni obsahuje
-i klasifikaci referenci.
+Sada dokumentu z OCR systemu, ktera slouzi pro kontrolu chovani klasifikatoru a jeho schopnost klasifikace po upravach. <br />
+Spravna klasifikace je ulozena v manualClassification.txt ve formatu JSON. <br />
 
-LSRCIT/
--------
+#### in2/ ####
+
+Druha sada dokumentu z OCR systemu, ktera slouzi pro kontrolu chovani klasifikatoru a jeho schopnost klasifikace po upravach. <br />
+Spravna klasifikace je ulozena v manualClassificationWithReferences.txt ve formatu JSON. Tato sada narozdil od prvni obsahuje <br />
+i klasifikaci referenci. <br />
+
+#### LSRCIT/ ####
+
 Skripty vyuzivane ke klasifikaci citaci.
 
-LSRHED/
--------
+#### LSRHED/ ####
+
 Skripty vyuzivane ke klasifikaci hlavicky dokumentu.
 
-LSRLabel/
----------
+#### LSRLabel/ ####
+
 Skripty vyuzivane k obecne klasifikaci dokumentu.
 
-LSRRTF/
--------
+#### LSRRTF/ ####
+
 Pomocne skripty klasifikatoru.
 
-out/
-----
+#### out/ ####
+
 Klasifikovane dokumenty prvni testovaci sady.
 
-out2/
------
+#### out2/ ####
+
 Klasifikovane dokumenty druhe testovaci sady.
 
-outClass/
----------
+#### outClass/ ####
+
 Klasifikovane dokumenty z vystupni slozky OCR systemu.
 
-tmp/
-----
+#### tmp/ ####
+
 Slozka pro ukladani pomocnych souboru pri klasifikovani.
