@@ -1,0 +1,9 @@
+# Verzovani ignorovano
+databaseAccess.dat
+
+# Testovaci soubory
+outTest.dat
+outTest2.dat
+
+# Neni nutne verzovat, protoze je stejne nutne si CRF++ klasifikator instalovat lokalne
+crfpp/
