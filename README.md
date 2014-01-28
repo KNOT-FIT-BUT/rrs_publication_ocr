@@ -2,19 +2,19 @@
 
 ## crfpp/ ##
 
-Slozka s instalacnimi soubory CRF++ klasifikatoru + trenovaci data.
+Složka s instalaèními soubory CRF++ klasifikátoru + trénovací data.
 
 ## LSR/ ##
 
 ### Skripty ###
 
-#### Klasifikator: ####
+#### Klasifikátor: ####
 
 **./lsr.py** --input vstup --output výstup -m [extract_all | extract_hed | extract_section| extract_nocit] -i [rtf | ...]
 
-	* --input - vstupní soubor <br />
-	* --output - výstupní soubor v XML. Pokud není zadán, tiskne se výsledek na standardní výstup. <br />
-	* -m - mód zpracování souboru:
+* --input - vstupní soubor <br />
+* --output - výstupní soubor v XML. Pokud není zadán, tiskne se výsledek na standardní výstup. <br />
+* -m - mód zpracování souboru:
 
 	"extract_all" - provede základní klasifikaci dokumentu + dodateènou klasifikaci nadpisù <br />
 	+ klasifikaci hlavièky dokumentu <br />
@@ -23,11 +23,11 @@ Slozka s instalacnimi soubory CRF++ klasifikatoru + trenovaci data.
 
 	"extract_section" - provede základní klasifikaci dokumentu <br />
 
-	* -i - urèuje formát vstupu. Zatím "rtf" bere jako vstupní soubor formátu RTF, ostatní èi nezadané považuje za txt soubor. <br />
+* -i - urèuje formát vstupu. Zatím "rtf" bere jako vstupní soubor formátu RTF, ostatní èi nezadané považuje za txt soubor. <br />
 
 **./processOCRRTF.py** <br />
 
-Jedna se o modul, ktery pouziva klasifikator k extrahovani suroveho textu z vysledku klasifikace, ktera je ve forme XML <br />
+Jedná se o modul, který používá klasifikátor k extrahování surového textu z výsledku klasifikace, která je ve formì XML <br />
 souboru. <br />
 
 #### XML parser: ####
@@ -46,13 +46,13 @@ Nový parser <br />
 
 RTF parser je možné použít i samostatnì bez následné klasifikace. Staèí odkomentovat funkci main().
 
-#### Klasifikace dokumentu z vystupu OCR systemu: ####
+#### Klasifikace dokumentu z výstupu OCR systému: ####
 
 **./runClassification.py**
 
-Skript urceny pouze pro zklasifikovani vsech dokumentu nachazejicich se ve vystupni slozce OCR systemu. <br />
-K tomuto skriptu se vaze soubor classPassed.dat, ktery rika, ktere slozky jiz byly klasifikovany a take <br />
-soubor outClass.log, ktery uchovava informace o vysledku klasifikace kazdeho klasifikovaneho souboru. <br />
+Skript urèený pouze pro zklasifikování všech dokumentù nacházejících se ve výstupní složce OCR systému. <br />
+K tomuto skriptu se váže soubor classPassed.dat, který øíká, které složky již byly klasifikovány a také <br />
+soubor outClass.log, který uchovává informace o výsledku klasifikace každého klasifikovaného souboru. <br />
 
 #### Automatizované vyhodnocení klasifikace: ####
 
@@ -70,56 +70,56 @@ dokumentech, poèet oznaèení klasifikátorem a poèet správných oznaèení klasifikát
 Skript prochází složku OutClass a všechny doposud neuložené dokumenty ukládá do databáze. Seznam již uložených dokumentù <br />
 je obsažen v souboru OutSavedToDB.dat. Skript tento seznam s každým svým bìhem aktualizuje. <br />
 
-Skript vyuziva pro pristup k databazi soubor databaseAccess.dat, ktery je naplnen pristupovymi udaji ve tvaru: <br />
+Skript využívá pro pøístup k databázi soubor databaseAccess.dat, který je naplnìn pøístupovými údaji ve tvaru: <br />
 host:dbname:user:password <br />
 
-Jelikoz tento soubor obsahuje citliva data, neni verzovan a je nutne si jej lokalne vytvorit!
+Jelikož tento soubor obsahuje citlivá data, není verzován a je nutné si jej lokálnì vytvoøit!
 
-### Slozky ###
+### Složky ###
 
 #### crfpp/ ####
 
-obsahuje nainstalovany CRF++ klasifikator
+obsahuje nainstalovaný CRF++ klasifikátor
 
 #### in/ ####
 
-Sada dokumentu z OCR systemu, ktera slouzi pro kontrolu chovani klasifikatoru a jeho schopnost klasifikace po upravach. <br />
-Spravna klasifikace je ulozena v manualClassification.txt ve formatu JSON. <br />
+Sada dokumentù z OCR systému, která slouží pro kontrolu chování klasifikátoru a jeho schopnost klasifikace po úpravách. <br />
+Správná klasifikace je uložena v manualClassification.txt ve formátu JSON. <br />
 
 #### in2/ ####
 
-Druha sada dokumentu z OCR systemu, ktera slouzi pro kontrolu chovani klasifikatoru a jeho schopnost klasifikace po upravach. <br />
-Spravna klasifikace je ulozena v manualClassificationWithReferences.txt ve formatu JSON. Tato sada narozdil od prvni obsahuje <br />
-i klasifikaci referenci. <br />
+Druhá sada dokumentù z OCR systému, která slouží pro kontrolu chování klasifikátoru a jeho schopnost klasifikace po úpravách. <br />
+Správná klasifikace je uložena v manualClassificationWithReferences.txt ve formátu JSON. Tato sada narozdíl od první obsahuje <br />
+i klasifikaci referencí. <br />
 
 #### LSRCIT/ ####
 
-Skripty vyuzivane ke klasifikaci citaci.
+Skripty využívané ke klasifikaci citací.
 
 #### LSRHED/ ####
 
-Skripty vyuzivane ke klasifikaci hlavicky dokumentu.
+Skripty využívané ke klasifikaci hlavièky dokumentu.
 
 #### LSRLabel/ ####
 
-Skripty vyuzivane k obecne klasifikaci dokumentu.
+Skripty využívané k obecné klasifikaci dokumentu.
 
 #### LSRRTF/ ####
 
-Pomocne skripty klasifikatoru.
+Pomocné skripty klasifikátoru.
 
 #### out/ ####
 
-Klasifikovane dokumenty prvni testovaci sady.
+Klasifikované dokumenty první testovací sady.
 
 #### out2/ ####
 
-Klasifikovane dokumenty druhe testovaci sady.
+Klasifikované dokumenty druhé testovací sady.
 
 #### outClass/ ####
 
-Klasifikovane dokumenty z vystupni slozky OCR systemu.
+Klasifikované dokumenty z výstupní složky OCR systému.
 
 #### tmp/ ####
 
-Slozka pro ukladani pomocnych souboru pri klasifikovani.
+Složka pro ukládání pomocných souborù pøi klasifikování.
