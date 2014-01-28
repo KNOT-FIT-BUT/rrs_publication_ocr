@@ -10,14 +10,14 @@ Složka s instalaèními soubory CRF++ klasifikátoru + trénovací data.
 
 #### Klasifikátor: ####
 
-**./lsr.py** --input vstup --output výstup -m [extract_all | extract_hed | extract_section| extract_nocit] -i [rtf | ...]
+**./lsr.py** --input vstup --output vystup -m [extract_all | extract_hed | extract_section| extract_nocit] -i [rtf | ...]
 
 * --input - vstupní soubor <br />
 * --output - výstupní soubor v XML. Pokud není zadán, tiskne se výsledek na standardní výstup. <br />
 * -m - mód zpracování souboru:
 
-	"extract_all" - provede základní klasifikaci dokumentu + dodateènou klasifikaci nadpisù <br />
-	+ klasifikaci hlavièky dokumentu <br />
+	"extract_all" - provede základní klasifikaci dokumentu, dodateènou klasifikaci nadpisù <br />
+	a klasifikaci hlavièky dokumentu <br />
 
 	"extract_hed" - provede klasifikaci hlavièky dokumentu <br />
 
@@ -27,8 +27,7 @@ Složka s instalaèními soubory CRF++ klasifikátoru + trénovací data.
 
 **./processOCRRTF.py** <br />
 
-Jedná se o modul, který používá klasifikátor k extrahování surového textu z výsledku klasifikace, která je ve formì XML <br />
-souboru. <br />
+Jedná se o modul, který používá klasifikátor k extrahování surového textu z výsledku klasifikace, která je ve formì XML souboru. <br />
 
 #### XML parser: ####
 
@@ -50,25 +49,25 @@ RTF parser je možné použít i samostatnì bez následné klasifikace. Staèí odkoment
 
 **./runClassification.py**
 
-Skript urèený pouze pro zklasifikování všech dokumentù nacházejících se ve výstupní složce OCR systému. <br />
-K tomuto skriptu se váže soubor classPassed.dat, který øíká, které složky již byly klasifikovány a také <br />
+Skript urèený pouze pro zklasifikování všech dokumentù nacházejících se ve výstupní složce OCR systému. 
+K tomuto skriptu se váže soubor classPassed.dat, který øíká, které složky již byly klasifikovány a také 
 soubor outClass.log, který uchovává informace o výsledku klasifikace každého klasifikovaného souboru. <br />
 
 #### Automatizované vyhodnocení klasifikace: ####
 
 **./ClassificationCheck.py**
 
-Automatizované vyhodnocení provádí kontrolu klasifikace Titulu, Autorù, E-Mailù, Pøièlenìní, Abstraktu, Nadpisu 1 a Nadpisu 2. <br />
-Výstupem je tabulka pro každý soubor, která ukazuje výsledek klasifikace pro danou èást dokumentu. Po dokonèení kontroly všech <br />
-dokumentù je vytvoøena tabulka ukazující F-Measure Score, Recall, Precision, skuteèný poèet dané èasti dokumentu ve všech <br />
+Automatizované vyhodnocení provádí kontrolu klasifikace Titulu, Autorù, E-Mailù, Pøièlenìní, Abstraktu, Nadpisu 1 a Nadpisu 2. 
+Výstupem je tabulka pro každý soubor, která ukazuje výsledek klasifikace pro danou èást dokumentu. Po dokonèení kontroly všech 
+dokumentù je vytvoøena tabulka ukazující F-Measure Score, Recall, Precision, skuteèný poèet dané èasti dokumentu ve všech 
 dokumentech, poèet oznaèení klasifikátorem a poèet správných oznaèení klasifikátorem. <br />
 
 #### Uložení klasifikovaných dokumentù do databáze: ####
 
 **./SaveOutClassToDatabase.py**
 
-Skript prochází složku OutClass a všechny doposud neuložené dokumenty ukládá do databáze. Seznam již uložených dokumentù <br />
-je obsažen v souboru OutSavedToDB.dat. Skript tento seznam s každým svým bìhem aktualizuje. <br />
+Skript prochází složku OutClass a všechny doposud neuložené dokumenty ukládá do databáze. Seznam již uložených dokumentù 
+je obsažen v souboru OutSavedToDB.dat. Skript tento seznam s každým svým bìhem aktualizuje. 
 
 Skript využívá pro pøístup k databázi soubor databaseAccess.dat, který je naplnìn pøístupovými údaji ve tvaru: <br />
 host:dbname:user:password <br />
@@ -83,13 +82,13 @@ obsahuje nainstalovaný CRF++ klasifikátor
 
 #### in/ ####
 
-Sada dokumentù z OCR systému, která slouží pro kontrolu chování klasifikátoru a jeho schopnost klasifikace po úpravách. <br />
+Sada dokumentù z OCR systému, která slouží pro kontrolu chování klasifikátoru a jeho schopnost klasifikace po úpravách. 
 Správná klasifikace je uložena v manualClassification.txt ve formátu JSON. <br />
 
 #### in2/ ####
 
-Druhá sada dokumentù z OCR systému, která slouží pro kontrolu chování klasifikátoru a jeho schopnost klasifikace po úpravách. <br />
-Správná klasifikace je uložena v manualClassificationWithReferences.txt ve formátu JSON. Tato sada narozdíl od první obsahuje <br />
+Druhá sada dokumentù z OCR systému, která slouží pro kontrolu chování klasifikátoru a jeho schopnost klasifikace po úpravách. 
+Správná klasifikace je uložena v manualClassificationWithReferences.txt ve formátu JSON. Tato sada narozdíl od první obsahuje 
 i klasifikaci referencí. <br />
 
 #### LSRCIT/ ####
