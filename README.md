@@ -10,40 +10,45 @@ Slozka s instalacnimi soubory CRF++ klasifikatoru + trenovaci data.
 
 #### Klasifikator: ####
 
-./lsr.py --input vstup --output výstup -m [extract_all | extract_hed | extract_section| extract_nocit] -i [rtf | ...]
+**./lsr.py** --input vstup --output výstup -m [extract_all | extract_hed | extract_section| extract_nocit] -i [rtf | ...]
 
-&#09;--input - vstupní soubor <br />
->--output - výstupní soubor v XML. Pokud není zadán, tiskne se výsledek na standardní výstup. <br />
->-m - mód zpracování souboru: - "extract_all" - provede základní klasifikaci dokumentu + dodateènou klasifikaci nadpisù <br />
->                                + klasifikaci hlavièky dokumentu <br />
->                             - "extract_hed" - provede klasifikaci hlavièky dokumentu <br />
->                             - "extract_section" - provede základní klasifikaci dokumentu <br />
->-i - urèuje formát vstupu. Zatím "rtf" bere jako vstupní soubor formátu RTF, ostatní èi nezadané považuje za txt soubor. <br />
+	* --input - vstupní soubor <br />
+	* --output - výstupní soubor v XML. Pokud není zadán, tiskne se výsledek na standardní výstup. <br />
+	* -m - mód zpracování souboru:
 
-./processOCRRTF.py <br />
+	"extract_all" - provede základní klasifikaci dokumentu + dodateènou klasifikaci nadpisù <br />
+	+ klasifikaci hlavièky dokumentu <br />
+
+	"extract_hed" - provede klasifikaci hlavièky dokumentu <br />
+
+	"extract_section" - provede základní klasifikaci dokumentu <br />
+
+	* -i - urèuje formát vstupu. Zatím "rtf" bere jako vstupní soubor formátu RTF, ostatní èi nezadané považuje za txt soubor. <br />
+
+**./processOCRRTF.py** <br />
 
 Jedna se o modul, ktery pouziva klasifikator k extrahovani suroveho textu z vysledku klasifikace, ktera je ve forme XML <br />
 souboru. <br />
 
 #### XML parser: ####
 
-./xmlParser.py
+**./xmlParser.py**
 
 XML parser je možné použít i samostatnì bez následné klasifikace.
 
 #### RTF parser: ####
 
 Starý parser <br />
-./rtfParser.py
+**./rtfParser.py**
 
 Nový parser <br />
-./rtfParserNew.py
+**./rtfParserNew.py**
 
 RTF parser je možné použít i samostatnì bez následné klasifikace. Staèí odkomentovat funkci main().
 
 #### Klasifikace dokumentu z vystupu OCR systemu: ####
 
-./runClassification.py
+**./runClassification.py**
 
 Skript urceny pouze pro zklasifikovani vsech dokumentu nachazejicich se ve vystupni slozce OCR systemu. <br />
 K tomuto skriptu se vaze soubor classPassed.dat, ktery rika, ktere slozky jiz byly klasifikovany a take <br />
@@ -51,7 +56,7 @@ soubor outClass.log, ktery uchovava informace o vysledku klasifikace kazdeho kla
 
 #### Automatizované vyhodnocení klasifikace: ####
 
-./ClassificationCheck.py
+**./ClassificationCheck.py**
 
 Automatizované vyhodnocení provádí kontrolu klasifikace Titulu, Autorù, E-Mailù, Pøièlenìní, Abstraktu, Nadpisu 1 a Nadpisu 2. <br />
 Výstupem je tabulka pro každý soubor, která ukazuje výsledek klasifikace pro danou èást dokumentu. Po dokonèení kontroly všech <br />
@@ -60,7 +65,7 @@ dokumentech, poèet oznaèení klasifikátorem a poèet správných oznaèení klasifikát
 
 #### Uložení klasifikovaných dokumentù do databáze: ####
 
-./SaveOutClassToDatabase.py
+**./SaveOutClassToDatabase.py**
 
 Skript prochází složku OutClass a všechny doposud neuložené dokumenty ukládá do databáze. Seznam již uložených dokumentù <br />
 je obsažen v souboru OutSavedToDB.dat. Skript tento seznam s každým svým bìhem aktualizuje. <br />
