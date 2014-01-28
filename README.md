@@ -12,7 +12,7 @@ Slozka s instalacnimi soubory CRF++ klasifikatoru + trenovaci data.
 
 ./lsr.py --input vstup --output výstup -m [extract_all | extract_hed | extract_section| extract_nocit] -i [rtf | ...]
 
->--input - vstupní soubor <br />
+&#09;--input - vstupní soubor <br />
 >--output - výstupní soubor v XML. Pokud není zadán, tiskne se výsledek na standardní výstup. <br />
 >-m - mód zpracování souboru: - "extract_all" - provede základní klasifikaci dokumentu + dodateènou klasifikaci nadpisù <br />
 >                                + klasifikaci hlavièky dokumentu <br />
