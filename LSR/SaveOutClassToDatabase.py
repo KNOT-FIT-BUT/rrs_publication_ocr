@@ -881,8 +881,8 @@ def main():
     text_fd.close()
     
     # Nastaveni cesty ke klasifikovanym dokumentum
-    #path = "/mnt/minerva1/nlp-in/athena3/rrs/reresearch.ocr/"
-    path = "./outClass/"
+    path = "/mnt/minerva1/nlp-in/athena3/rrs/reresearch.ocr/"
+    # path = "./outClass/"
     
     # Serazeni souboru a slozek ze zadane cesty
     files = os.listdir(path)
