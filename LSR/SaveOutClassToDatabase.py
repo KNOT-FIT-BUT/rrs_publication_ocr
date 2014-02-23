@@ -22,11 +22,7 @@ def GetTitle(xmlHeader, xmlLabel):
     # zde je pokus o zachranu v xmlLabel
     if not xmlTitle:
         xmlTitle = xmlLabel.SearchElemText(xmlLabel, "title")
-    
-    #########################################
-    #TODO: Zde je mozne provest filtraci nesmyslnych znaku a slov #
-    #########################################
-    
+        
     #return
     retArray = []
     retArray.append(xmlTitle)
@@ -48,10 +44,6 @@ def GetAuthors(xmlHeader, xmlLabel):
         
         # Odstraneni and, ktere by zpusobilo oznaceni dvou autoru jako jednoho
         xmlAuthorName = re.sub(r"(\,)?\s+and\s+", ",", xmlAuthorName)
-        
-        #########################################
-        #TODO: Zde je mozne provest filtraci nesmyslnych znaku a slov #
-        #########################################
         
         # V jedne oznacene casti se muze nachazet vice autoru
         while re.search(r"^[^\,]+", xmlAuthorName):
@@ -100,137 +92,12 @@ def GetAffiliations(xmlHeader, xmlLabel):
         if len(xmlAddresses) > i :
             xmlAuthorAffiliation += " " + xmlAddresses[i]
         
-        #########################################
-        #TODO: Zde je mozne provest filtraci nesmyslnych znaku a slov #
-        #########################################
-        
         # Ulozeni pricleneni
         affiliations.append(xmlAuthorAffiliation)
     
     #return
     retArray = []
     retArray.append(affiliations)
-    return retArray
-
-# Funkce na ziskani emailu
-#@param1 vysledek klasifikace hlavicky reprezentovan v XML
-#@param2 vysledek obecne klasifikace reprezentovan v XML
-#@return pole obsahujici emaily autoru dokumentu
-def GetEmails(xmlHeader, xmlLabel):
-    emails = []
-    errState = False
-    
-    xmlAuthorsEmail = xmlHeader.Select(xmlHeader, "email", [])
-    
-    # Zachrana z obecne klasifikace
-    if not xmlAuthorsEmail:
-        xmlAuthorsEmail = xmlLabel.Select(xmlLabel, "email", [])
-    
-    for item in xmlAuthorsEmail:
-        # Ziskani textu z XML podstromu obsahujici email
-        xmlAuthorEmail = item.SearchElemText(item, "email")
-        
-        if not re.search(r"@", xmlAuthorEmail):
-            continue
-        
-        # Odstraneni rusivych znaku
-        xmlAuthorEmail = re.sub(r"\\", "", xmlAuthorEmail)
-        xmlAuthorEmail = re.sub(r"\.\s+", ".", xmlAuthorEmail)
-        xmlAuthorEmail = re.sub(r"\s+@", "@", xmlAuthorEmail)
-        
-        #{name1(,|/) name2(,|/) ...}@domain
-        while re.search(r"\{[^\}]+\}",  xmlAuthorEmail) != None:
-            # Nacteni celeho souboru emailu
-            try:
-                tmpEmail = re.search(r"(\{([^\}]+)\}@(\.)?\w+((\-|\.)\w+)*\.\w+)|(\{([^\}]+)\})",  xmlAuthorEmail).group(0)
-                if not re.search(r"\}@", tmpEmail):
-                    tmpEmail = re.sub(r"\}", "", tmpEmail)
-                    tmpEmail = re.sub(r"@", "}@", tmpEmail)
-            except AttributeError as e:
-                sys.stderr.write("Nastala vyjimka pri zpracovani emailu!\n")
-                exc_type, exc_obj, exc_tb = sys.exc_info()
-                fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-                sys.stderr.write("Line: " + str(exc_tb.tb_lineno) + "\n")
-                errState = True
-                break
-            
-            # Ulozeni casti pred @
-            try:
-                tmpEmailPreAt = re.search(r"\{([^\}]*)\}", tmpEmail).group(0)
-            except AttributeError:
-                sys.stderr.write("Nastala vyjimka pri zpracovani emailu!\n")
-                exc_type, exc_obj, exc_tb = sys.exc_info()
-                fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-                sys.stderr.write("Line: " + str(exc_tb.tb_lineno) + "\n")
-                errState = True
-                break
-            
-            # Ulozeni casti po @ vcetne
-            try:
-                tmpEmailPostAt = re.search(r"@(\.)?\w+((\-|\.)\w+)*\.\w+", tmpEmail).group(0)
-            except AttributeError:
-                sys.stderr.write("Nastala vyjimka pri zpracovani emailu!\n")
-                exc_type, exc_obj, exc_tb = sys.exc_info()
-                fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-                sys.stderr.write("Line: " + str(exc_tb.tb_lineno) + "\n")
-                errState = True
-                break
-            
-            # Odstraneni tohoto souboru emailu
-            xmlAuthorEmail = re.sub(r"(\{([^\}]+)\}@(\.)?\w+((\-|\.)\w+)*\.\w+)|(\{([^\}]+)\})", "",  xmlAuthorEmail, 1)
-            
-            # Ziskani jednotlivych emailu ze souboru emailu
-            # odstraneni svorek
-            tmpEmailPreAt = re.sub(r"(\{|\})", "", tmpEmailPreAt, 2)
-            
-            # Ziskani jmena
-            while tmpEmailPreAt:
-                try:
-                    tmpName = re.search(r"^\w+((\-|\.)\w+)*", tmpEmailPreAt).group(0)
-                except AttributeError:
-                    sys.stderr.write("Nastala vyjimka pri zpracovani emailu!\n")
-                    exc_type, exc_obj, exc_tb = sys.exc_info()
-                    fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-                    sys.stderr.write("Line: " + str(exc_tb.tb_lineno) + "\n")
-                    sys.stderr.write("Email: " + tmpEmail + "\n")
-                    sys.stderr.write("Post: " + tmpEmailPostAt + "\n")
-                    sys.stderr.write("After: " + xmlAuthorEmail + "\n")
-                    errState = True
-                    break
-                
-                tmpEmailPreAt = re.sub(r"^\w+((\-|\.)\w+)*\s*(\,|/|\|)?\s*", "", tmpEmailPreAt, 1)
-                
-                # Slouceni jmena a koncovky
-                tmpEmailDone = tmpName + tmpEmailPostAt
-                
-                #########################################
-                #TODO: Zde je mozne provest filtraci nesmyslnych znaku a slov #
-                #########################################
-                
-                # Ulozeni do pole
-                emails.append(tmpEmailDone)
-        
-        if errState:
-            break
-        
-        #name@domain
-        while re.search(r"\w+((\-|\.)\w+)*@(\.)?\w+((\-|\.)\w+)*\.\w+", xmlAuthorEmail):
-            # Ziskani emailu
-            tmpEmail = re.search(r"\w+((\-|\.)\w+)*@(\.)?\w+((\-|\.)\w+)*\.\w+", xmlAuthorEmail).group(0)
-            
-            # Odstraneni emailu ze souboru mailu
-            xmlAuthorEmail = re.sub(r"\w+((\-|\.)\w+)*@(\.)?\w+((\-|\.)\w+)*\.\w+", "", xmlAuthorEmail, 1)
-            
-            #########################################
-            #TODO: Zde je mozne provest filtraci nesmyslnych znaku a slov #
-            #########################################
-            
-            # Ulozeni emailu
-            emails.append(tmpEmail)
-    
-    #return
-    retArray = []
-    retArray.append(emails)
     return retArray
 
 # Funkce pro ziskani abstraktu
@@ -245,10 +112,6 @@ def GetAbstract(xmlHeader, xmlLabel):
     # Zachrana, pokud v klasifikaci hlavicky nebyl abstrakt nalezen
     if not xmlAbstract:
         xmlAbstract = xmlLabel.SearchElemText(xmlLabel, "abstract")
-    
-    #########################################
-    #TODO: Zde je mozne provest filtraci nesmyslnych znaku a slov #
-    #########################################
     
     #return
     retArray = []
@@ -267,10 +130,6 @@ def GetSectionHeaders(xmlHeader, xmlLabel):
     for item in xmlSectionHeaderSelect:
         # Ziskani textu nadpisu z podstromu XML
         xmlSectionHeader = item.SearchElemText(item, "sectionHeader")
-        
-        #########################################
-        #TODO: Zde je mozne provest filtraci nesmyslnych znaku a slov #
-        #########################################
         
         # Ulozeni nadpisu
         chapters.append(xmlSectionHeader)
@@ -293,10 +152,6 @@ def GetSubSectionHeaders(xmlHeader, xmlLabel):
         # Ziskani textu podnadpisu z podstromu XML
         xmlSubSectionHeader = item.SearchElemText(item, "subsectionHeader")
         
-        #########################################
-        #TODO: Zde je mozne provest filtraci nesmyslnych znaku a slov #
-        #########################################
-        
         # Ulozeni podnadpisu
         subchapters.append(xmlSubSectionHeader)
     
@@ -310,18 +165,13 @@ def GetSubSectionHeaders(xmlHeader, xmlLabel):
 #@param2 connection
 #@param3 titul dokumentu
 #@return id titulu, tedy i celeho dokumentu
-def SaveTitle(cursor, connection, xmlTitle):
-    title_id = ""
+def SavePublication(cursor, connection, xmlTitle, xmlAbstract):
+    publication_id = ""
     commitNeeded = False
     
     if xmlTitle:
-        
-        #########################################
-        #TODO: Zde je mozne provest filtraci nesmyslnych znaku a slov #
-        #########################################
-        
         # Prohledani databaze, zda uz se v ni tento titul nenachazi
-        cursor.execute("SELECT id FROM data_xbreit00_test.project WHERE title = (%s);", (xmlTitle, ))
+        cursor.execute("SELECT id FROM data_xkajza00_test.publication WHERE title = (%s);", (xmlTitle, ))
         tmp = cursor.fetchone()
         
         # Nenachazi, je treba jej do databaze ulozit
@@ -329,22 +179,20 @@ def SaveTitle(cursor, connection, xmlTitle):
             commitNeeded = True
             
             # Vlozeni titulu
-            cursor.execute("""INSERT INTO data_xbreit00_test.project (title) VALUES (%s);""", (xmlTitle, ))
-            
-            # Potvrzeni zmen v databazi
-            connection.commit()
-            
+            cursor.execute("""INSERT INTO data_xkajza00_test.publication (title, abstract, title_normalized) VALUES (%s, %s, %s);""", (xmlTitle, xmlAbstract, TransformToASCII(xmlTitle), ))
+                        
             # Ziskani id titulu pro dalsi pouziti
-            cursor.execute("SELECT id FROM data_xbreit00_test.project WHERE title = (%s);", (xmlTitle, ))
-            title_id = cursor.fetchone()[0]
+            connection.commit()
+            cursor.execute("""SELECT LASTVAL()""")
+            
+            publication_id = cursor.fetchone()[0]
         
-        #Titul v databazi jiz je, ale id muzeme potrebovat
         else:
-            title_id = tmp[0]
+            publication_id = tmp[0]
     
     #return
     retArray = []
-    retArray.append(title_id)
+    retArray.append(publication_id)
     return retArray
 
 #Funkce pro transformaci UNICODE znaku na jejich 7-bit ASCII reprezentaci
@@ -603,17 +451,13 @@ def TransformToASCII(itemAuthorASCII):
 #@param1 session
 #@param2 connection
 #@param3 pole autoru dokumentu
-def SaveAuthors(cursor, connection, authors, title_id):
+def SaveAuthors(cursor, connection, authors, publication_id):
     author_id = ""
     commitNeeded = False
     
-    for itemAuthor in authors:
+    for rank, itemAuthor in enumerate(authors):
         if itemAuthor == None:
             continue
-        
-        #########################################
-        #TODO: Zde je mozne provest filtraci nesmyslnych znaku a slov #
-        #########################################
         
         # Ziskani jmena
         if re.search(r"[^\s]+", itemAuthor):
@@ -632,7 +476,7 @@ def SaveAuthors(cursor, connection, authors, title_id):
             itemAuthorASCII = TransformToASCII(itemAuthorASCII)
         
         # Prohledani databaze, zda se autor v ni jiz nenachazi
-        cursor.execute("SELECT id FROM data_xbreit00_test.person WHERE full_name = (%s);", (itemAuthor, ))
+        cursor.execute("SELECT id FROM data_xkajza00_test.person WHERE full_name = (%s);", (itemAuthor, ))
         tmp = cursor.fetchone()
         
         # Autor jeste v databazi neni
@@ -640,29 +484,27 @@ def SaveAuthors(cursor, connection, authors, title_id):
             commitNeeded = True
             
             # Ulozeni autora
-            cursor.execute("""INSERT INTO data_xbreit00_test.person (first_name, last_name, full_name, full_name_ascii) VALUES (%s, %s, %s, %s);""", (first_name, last_name, itemAuthor.decode('utf-8'), itemAuthorASCII.decode('utf-8')))
+            cursor.execute("""INSERT INTO data_xkajza00_test.person (first_name, last_name, full_name, full_name_ascii) VALUES (%s, %s, %s, %s);""", (first_name, last_name, itemAuthor.decode('utf-8')[:255], itemAuthorASCII.decode('utf-8')[:255]))
             
             # Potvrzeni zmen v databazi
             connection.commit()
-            
-            # Ziskani id autora
-            cursor.execute("SELECT id FROM data_xbreit00_test.person WHERE full_name = (%s);", (itemAuthor, ))
+            cursor.execute("""SELECT LASTVAL()""")
             author_id = cursor.fetchone()[0]
-        
+  
         # Autor sice v databazi je, ale id se muze hodit
         else:
             author_id = tmp[0]
         
         # Je nutne navazat autora na dokument, ale nejdrive je nutne overit, zda jiz neni navazany
-        if title_id != '':
-            cursor.execute("SELECT id FROM data_xbreit00_test.person_meta_xbreit00 WHERE person_id = (%s) AND title_id = (%s);", (author_id, title_id, ))
+        if publication_id != '':
+            cursor.execute("SELECT person_id FROM data_xkajza00_test.j_pers_publ WHERE person_id = (%s) AND publication_id = (%s) AND author_rank = (%s);", (author_id, publication_id, rank, ))
             tmp = cursor.fetchone()
         else:
             tmp = "err"
         
         #pokud jeste neni navazany
         if tmp == None:
-            cursor.execute("""INSERT INTO data_xbreit00_test.person_meta_xbreit00 (person_id,title_id) VALUES (%s,%s);""", (author_id, title_id, ))
+            cursor.execute("""INSERT INTO data_xkajza00_test.j_pers_publ (person_id,publication_id,author_rank) VALUES (%s,%s,%s);""", (author_id, publication_id, rank, ))
             
             connection.commit()
     
@@ -673,21 +515,19 @@ def SaveAuthors(cursor, connection, authors, title_id):
 #@param1 session
 #@param2 connection
 #@param3 pole pricleneni dokumentu
-def SaveAffiliations(cursor, connection, affiliations, title_id):
+def SaveAffiliations(cursor, connection, affiliations, publication_id):
     aff_id = ""
     commitNeeded = False
     
     for itemAff in affiliations:
-        
-        #########################################
-        #TODO: Zde je mozne provest filtraci nesmyslnych znaku a slov #
-        #########################################
+    
+        itemAff = re.sub(r'[^a-zA-Z0-9]*[Oo]rganization[ ]*[:]?[ ]*', '', itemAff)
         
         if len(itemAff) > 255:
             itemAff = itemAff[:128]
         
         # Vyhledani, zda uz se affiliation nenachazi v databazi
-        cursor.execute("SELECT id FROM data_xbreit00_test.organization WHERE title = (%s);", (itemAff, ))
+        cursor.execute("SELECT id FROM data_xkajza00_test.organization WHERE title = (%s);", (itemAff, ))
         tmp = cursor.fetchone()
         
         # Nenachazi, je treba jej ulozit
@@ -695,13 +535,11 @@ def SaveAffiliations(cursor, connection, affiliations, title_id):
             commitNeeded = True
             
             # Ulozeni affiliation do databaze
-            cursor.execute("""INSERT INTO data_xbreit00_test.organization (title, title_normalized) VALUES (%s, %s);""", (itemAff, itemAff, ))
+            cursor.execute("""INSERT INTO data_xkajza00_test.organization (title, title_normalized,title_fts) VALUES (%s, %s, to_tsvector('english', %s));""", (itemAff, itemAff, itemAff))
             
             # Potvrzeni zmen v databazi
             connection.commit()
-            
-            # Ziskani id affiliation
-            cursor.execute("SELECT id FROM data_xbreit00_test.organization WHERE title = (%s);", (itemAff, ))
+            cursor.execute("""SELECT LASTVAL()""")
             aff_id = cursor.fetchone()[0]
         
         # Affiliation se sice v databazi nachazi, ale id mozna jeste budeme potrebovat
@@ -709,130 +547,23 @@ def SaveAffiliations(cursor, connection, affiliations, title_id):
             aff_id = tmp[0]
         
         # Je nutne navazat affiliation na dokument, ale nejdrive je nutne overit, zda jiz neni navazany
-        if title_id != '':
-            cursor.execute("SELECT id FROM data_xbreit00_test.organization_meta_xbreit00 WHERE organization_id = (%s) AND title_id = (%s);", (aff_id, title_id, ))
+        if publication_id != '':
+            cursor.execute("SELECT organization_id FROM data_xkajza00_test.j_publ_orga_author WHERE organization_id = (%s) AND publication_id = (%s);", (aff_id, publication_id, ))
             tmp = cursor.fetchone()
         else:
             tmp = "err"
         
         # Pokud jeste neni navazany
         if tmp == None:
-            cursor.execute("""INSERT INTO data_xbreit00_test.organization_meta_xbreit00 (organization_id,title_id) VALUES (%s,%s);""", (aff_id, title_id, ))
+            cursor.execute("""INSERT INTO data_xkajza00_test.j_publ_orga_author (organization_id,publication_id) VALUES (%s,%s);""", (aff_id, publication_id, ))
             
             connection.commit()
     
     #return
     return
 
-# Funkce pro ulozeni emailu
-#@param1 session
-#@param2 connection
-#@param3 pole emailu dokumentu
-def SaveEmails(cursor, connection, emails, title_id):
-    email_id = ""
-    commitNeeded = False
-    
-    for itemEmail in emails:
-        
-        #########################################
-        #TODO: Zde je mozne provest filtraci nesmyslnych znaku a slov #
-        #########################################
-        
-        # Kontrola, zda se email uz v databazi nenachazi
-        cursor.execute("SELECT id FROM data_xbreit00_test.contact WHERE email = (%s);", (itemEmail, ))
-        tmp = cursor.fetchone()
-        
-        # Nenachazi, je treba jej ulozit
-        if tmp == None:
-            commitNeeded = True
-            
-            # Ulozeni emailu do databaze
-            cursor.execute("""INSERT INTO data_xbreit00_test.contact (email) VALUES (%s);""", (itemEmail, ))
-            
-            # Potvrzeni zmen v databazi
-            connection.commit()
-            
-            # Ziskani id emailu
-            cursor.execute("SELECT id FROM data_xbreit00_test.contact WHERE email = (%s);", (itemEmail, ))
-            email_id = cursor.fetchone()[0]
-        
-        # Nachazi, ale id muzeme jeste potrebovat
-        else:
-            email_id = tmp[0]
-        
-        # Je nutne navazat email na dokument, ale nejdrive je nutne overit, zda jiz neni navazany
-        if title_id != '':
-            cursor.execute("SELECT id FROM data_xbreit00_test.contact_meta_xbreit00 WHERE contact_id = (%s) AND title_id = (%s);", (email_id, title_id, ))
-            tmp = cursor.fetchone()
-        else:
-            tmp = "err"
-        
-        # Pokud jeste neni navazany
-        if tmp == None:
-            cursor.execute("""INSERT INTO data_xbreit00_test.contact_meta_xbreit00 (contact_id,title_id) VALUES (%s,%s);""", (email_id, title_id, ))
-            
-            connection.commit()
-    
-    #return
-    return
-
-# Funkce pro ulozeni abstraktu
-#@param1 session
-#@param2 connection
-#@param3 abstrakt dokumentu
-def SaveAbstract(cursor, connection, xmlAbstract, title_id):
-    abstract_id = ""
-    commitNeeded = False
-    
-    if xmlAbstract:
-        
-        #########################################
-        #TODO: Zde je mozne provest filtraci nesmyslnych znaku a slov #
-        #########################################
-        
-        # Kontrola, zda se abstrakt uz v databazi nenachazi
-        cursor.execute("SELECT id FROM data_xbreit00_test.annotation_xbreit00 WHERE content = (%s);", (xmlAbstract, ))
-        tmp = cursor.fetchone()
-        
-        # Nenachazi, je treba jej ulozit
-        if tmp == None:
-            commitNeeded = True
-            
-            # Ulozeni abstraktu do databaze
-            cursor.execute("""INSERT INTO data_xbreit00_test.annotation_xbreit00 (content) VALUES (%s);""", (xmlAbstract, ))
-            
-            # Potvrzeni zmen v databazi
-            connection.commit()
-            
-            # Ziskani id abstraktu
-            cursor.execute("SELECT id FROM data_xbreit00_test.annotation_xbreit00 WHERE content = (%s);", (xmlAbstract, ))
-            abstract_id = cursor.fetchone()[0]
-        
-        # Nachazi, ale id muzeme jeste potrebovat
-        else:
-            abstract_id = tmp[0]
-        
-        # Je nutne navazat abstrakt na dokument, ale nejdrive je nutne overit, zda jiz neni navazany
-        if title_id != '':
-            cursor.execute("SELECT id FROM data_xbreit00_test.annotation_meta_xbreit00 WHERE annotation_id = (%s) AND title_id = (%s);", (abstract_id, title_id, ))
-            tmp = cursor.fetchone()
-        else:
-            tmp = "err"
-        
-        # Pokud jeste neni navazany
-        if tmp == None:
-            cursor.execute("""INSERT INTO data_xbreit00_test.annotation_meta_xbreit00 (annotation_id,title_id) VALUES (%s,%s);""", (abstract_id, title_id, ))
-        
-            connection.commit()
-    
-    #return
-    return
-
-""" MAIN """
-def main():
-    input = ""
-    
-    # Nacteni pristupovzch udaju do databaze
+# Ziskani pristupovych udaju do databaze
+def GetAccessInfo():
     text_fd = ""
     try:
         text_fd = codecs.open("databaseAccess.dat", 'r', "utf-8")
@@ -843,7 +574,7 @@ def main():
     #host:dbname:user:password
     databaseAccess = text_fd.read()
     
-    # Uzavrneni souboru
+    # Uzavreni souboru
     text_fd.close()
     
     databaseAccess = re.sub(r"\n", "", databaseAccess)
@@ -852,13 +583,10 @@ def main():
     if len(datAccArr) < 4:
         sys.stderr.write("Soubor databaseAccess.dat je spatne naplnen, neni tak mozne se pripojit k databazi!\n")
         sys.exit(1)
-    
-    
-    # Vytvoreni spojeni
-    connection = psycopg2.connect("host=" + datAccArr[0] + " dbname=" + datAccArr[1] + " user=" + datAccArr[2] + " password=" + datAccArr[3])
-    cursor = connection.cursor()
-    
-    # Nacteni jiz ulozenych dokumentu
+    return datAccArr
+
+# Nacteni ulozenych dokumentu
+def GetSavedDocuments():
     text_fd = ""
     try:
         text_fd = codecs.open("OutSavedToDB.dat", 'r', "utf-8")
@@ -879,9 +607,25 @@ def main():
     
     # Uzavrneni souboru
     text_fd.close()
+
+    return dict
+
+""" MAIN """
+def main():
+    input = ""
+    
+    # Nacteni pristupovzch udaju do databaze
+    datAccArr = GetAccessInfo()
+    
+    # Vytvoreni spojeni
+    connection = psycopg2.connect("host=" + datAccArr[0] + " dbname=" + datAccArr[1] + " user=" + datAccArr[2] + " password=" + datAccArr[3])
+    cursor = connection.cursor()
+    
+    # Nacteni jiz ulozenych dokumentu
+    dict = GetSavedDocuments()
     
     # Nastaveni cesty ke klasifikovanym dokumentum
-    path = "/mnt/minerva1/nlp-in/athena3/rrs/reresearch.ocr/"
+    path = "/mnt/minerva1/nlp/projects/rrs_publication_ocr/LSR/outClass/"
     # path = "./outClass/"
     
     # Serazeni souboru a slozek ze zadane cesty
@@ -966,10 +710,6 @@ def main():
                 retArray = GetAffiliations(xmlHeader, xmlLabel)
                 affiliations = retArray[0]
                 
-                # Ziskani emailu
-                retArray = GetEmails(xmlHeader, xmlLabel)
-                emails = retArray[0]
-                
                 # Ziskani abstraktu
                 retArray = GetAbstract(xmlHeader, xmlLabel)
                 xmlAbstract = retArray[0]
@@ -985,21 +725,15 @@ def main():
                 subchapters = retArray[0]
                 
                 #################### Ulozeni jednotlivych casti dokumentu do databaze ####################
-                # Titul
-                retArray = SaveTitle(cursor, connection, xmlTitle)
-                title_id = retArray[0]
+                # Publikace
+                retArray = SavePublication(cursor, connection, xmlTitle, xmlAbstract)
+                publication_id = retArray[0]
                 
                 # Autori
-                SaveAuthors(cursor, connection, authors, title_id)
+                SaveAuthors(cursor, connection, authors, publication_id)
                 
                 # Pricleneni
-                SaveAffiliations(cursor, connection, affiliations, title_id)
-                
-                # Email
-                SaveEmails(cursor, connection, emails, title_id)
-                
-                # Abstrakt
-                SaveAbstract(cursor, connection, xmlAbstract, title_id)
+                SaveAffiliations(cursor, connection, affiliations, publication_id)
                 
                 # Otevreni logovaciho souboru souboru
                 fileLog = ""
@@ -1014,7 +748,7 @@ def main():
                 
                 # Uzavrneni souboru
                 fileLog.close()
-    
+                
     cursor.close()
     connection.close()
     sys.exit(0)
