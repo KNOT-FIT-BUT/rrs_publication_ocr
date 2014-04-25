@@ -268,11 +268,11 @@ def CorSection(xmlData):
                 if not (knownSections.has_key(xmlSectionsTextData) or re.search(r"^APPENDIX\s+[A-Z]$", xmlSectionsTextData)):
                     changeBadSec = True
                     if itemCnt == 0:
-                        #sys.stderr.write("SPATNY NADPIS NALEZENO - Zmena na titul\n")
+                        sys.stderr.write("SPATNY NADPIS NALEZENO - Zmena na titul\n")
                         #sys.stdout.write("SPATNY NADPIS NALEZENO - Zmena na titul\n")
                         itemSec.text = "title"
                     else:
-                        #sys.stderr.write("SPATNY NADPIS NALEZENO\n")
+                        sys.stderr.write("SPATNY NADPIS NALEZENO\n")
                         #sys.stdout.write("SPATNY NADPIS NALEZENO\n")
                         itemSec.text = "bodyText"
             itemCnt += 1
@@ -371,7 +371,7 @@ def CorSection(xmlData):
     changeSec = False
     #print "oprava nadpisu"
     for itemSubSec in subsections:
-        #sys.stderr.write("oprava nadpisu\n")
+        sys.stderr.write("oprava nadpisu\n")
         #sys.stderr.write(itemSubSec.data)
         xmlSubSectionsText = itemSubSec.child[1]
         
@@ -560,7 +560,7 @@ def main():
     #vice jak jeden soubor.
     while(True):
         #nastaveni tmp souboru
-        tmpfile = "/tmp/" + tmpfile + str(int(time()))
+        tmpfile = "./tmp/" + tmpfile + str(int(time()))
         if debug:
             print "Tmpfile: " + tmpfile
      
@@ -780,7 +780,7 @@ def main():
             try:
                 output_fd = codecs.open(output_file, 'w', "utf-8")
             except IOError:
-                sys.stderr.write("Nelze otevrit soubor " + output_file)
+                sys.stderr.write("Nelze zapsat do souboru " + output_file + "\n")
                 sys.exit(1)
                 
             output_fd.write(rxml)

@@ -551,11 +551,13 @@ def GetDifferentialFeatures(id):
     return retArray
 
 def Output(lines, out_file):
+    #sys.stderr.write("out_file: " + out_file + "\n")
+    #sys.exit(0)
     output_handle = ""
     try:
         output_handle = codecs.open(out_file, 'w', "utf-8")
     except IOError:
-        sys.stderr.write("Nelze otevrit soubor " + out_file)
+        sys.stderr.write("Nelze zapsat do souboru " + out_file + "\n")
         sys.exit(1)
     
     #RTF feature label
@@ -647,6 +649,9 @@ def Entry(xml, input, out_file):
     global body_start_id
     global lines_addr
     
+    #sys.stderr.write("input: " + input + "\n")
+    #sys.exit(0)
+    
     contentStr = ProcessFile(xml, input)
     #sys.stderr.write("ContentStr\n")
     #print contentStr.encode('utf-8').strip()
@@ -664,14 +669,13 @@ def Entry(xml, input, out_file):
     Output(lines, out_file)
     #sys.stderr.write("Lines\n")
     #print lines
-    #sys.exit(0)
     
     if address == 1:
         address_handle = ""
         try:
             address_handle = codecs.open(out_file + ".address", 'w', "utf-8")
         except IOError:
-            sys.stderr.write("Nelze otevrit soubor " + out_file + ".address")
+            sys.stderr.write("Nelze zapsat do souboru " + out_file + ".address\n")
             sys.exit(1)
         
         for addr in lines_addr:
