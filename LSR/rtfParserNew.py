@@ -423,7 +423,7 @@ globTextData = []
 #v urcitych pripadech by doslo k duplikaci textu
 globWriteEnable = True
 
-globPrintFunctionName = True
+globPrintFunctionName = False
 
 #pro ulozeni odstavcu vcetne dulezitych informaci
 globParaList = []
